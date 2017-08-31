@@ -61,7 +61,7 @@ struct SharemindAccessControlFacility_ {
     SharemindAccessControlFacilityError
     (* SHAREMIND_ICONST getAccessControlList)(
             SharemindAccessControlFacility * facility,
-            char * resultAcl);
+            char const *& resultAcl);
 
     SHAREMIND_ICONST void * SHAREMIND_ICONST internal;
 
