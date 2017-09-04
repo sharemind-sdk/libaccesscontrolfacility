@@ -65,8 +65,6 @@ struct SharemindAccessControlFacility_ {
             char const * action,
             char const *& resultAcl);
 
-    SHAREMIND_ICONST void * SHAREMIND_ICONST internal;
-
 };
 
 SHAREMIND_EXTERN_C_END
