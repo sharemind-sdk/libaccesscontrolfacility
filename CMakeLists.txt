@@ -26,7 +26,7 @@ INCLUDE("${CMAKE_CURRENT_BINARY_DIR}/config.local" OPTIONAL)
 FIND_PACKAGE(SharemindCMakeHelpers REQUIRED)
 
 SharemindSetProjectVersion()
-SET(SharemindLibAccessControlFacility_COMPAT_VERSION "${SharemindLibAccessControlFacility_VERSION}")
+
 
 FIND_PACKAGE(SharemindCHeaders REQUIRED)
 
@@ -39,13 +39,15 @@ INSTALL(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/src/"
         DESTINATION "include/sharemind"
         COMPONENT "api-dev")
 
+
 # Install cmake files:
-SET(SharemindLibAccessControlFacility_INSTALL_INCLUDE_DIRS
-    ${Boost_INCLUDE_DIRS}
-    ${SharemindCHeaders_INCLUDE_DIRS}
-    "${CMAKE_INSTALL_PREFIX}/include"
+SharemindCreateCMakeFindFiles(
+    COMPONENT "api-dev"
+    INCLUDE_DIRS
+        "${CMAKE_INSTALL_PREFIX}/include"
+        ${Boost_INCLUDE_DIRS}
+        ${SharemindCHeaders_INCLUDE_DIRS}
 )
-SharemindUseCMakeFindFiles(COMPONENT "api-dev")
 
 
 # Packaging:
