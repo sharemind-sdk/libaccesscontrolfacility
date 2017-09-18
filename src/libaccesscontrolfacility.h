@@ -22,11 +22,13 @@
 
 #ifdef __cplusplus
 #include <cstddef>
+#include <cstdlib>
 #include <cstdint>
 #endif
 #include <sharemind/extern_c.h>
 #ifndef __cplusplus
 #include <stddef.h>
+#include <stdlib.h>
 #include <stdint.h>
 #endif
 
@@ -54,16 +56,66 @@ typedef enum SharemindAccessControlFacilityError_ {
 
 } SharemindAccessControlFacilityError;
 
+typedef struct SharemindAccessControlFacilityProgramAcl_ {
+    char const** allowedResources;
+    size_t allowedResourcesLength;
+    char const** deniedResources;
+    size_t deniedResourcesLength;
+} SharemindAccessControlFacilityProgramAcl;
+
+static inline SharemindAccessControlFacilityProgramAcl * SharemindAccessControlFacilityProgramAcl_init(
+        size_t allowedResourcesLength, size_t deniedResourcesLength)
+{
+    SharemindAccessControlFacilityProgramAcl * acl =
+            (SharemindAccessControlFacilityProgramAcl *)
+            malloc(sizeof(SharemindAccessControlFacilityProgramAcl));
+    if (!acl)
+        return NULL;
+    acl->allowedResourcesLength = allowedResourcesLength;
+    acl->deniedResourcesLength = deniedResourcesLength;
+
+    acl->allowedResources = (char const**)malloc((allowedResourcesLength)*sizeof(char*));
+    if (!acl->allowedResources) {
+        free(acl);
+        return NULL;
+    }
+
+    acl->deniedResources = (char const**)malloc((deniedResourcesLength)*sizeof(char*));
+    if (!acl->deniedResources) {
+        free(acl->allowedResources);
+        free(acl);
+        return NULL;
+    }
+
+    return acl;
+}
+
+static inline void SharemindAccessControlFacilityProgramAcl_free(
+        SharemindAccessControlFacilityProgramAcl * acl)
+{
+    if (!acl)
+        return;
+    for (size_t i = 0; i < acl->allowedResourcesLength; i++) {
+        free((char *)acl->allowedResources[i]);
+    }
+    free(acl->allowedResources);
+
+    for (size_t i = 0; i < acl->deniedResourcesLength; i++) {
+        free((char *)acl->deniedResources[i]);
+    }
+    free(acl->deniedResources);
+}
+
 struct SharemindAccessControlFacility_;
 typedef struct SharemindAccessControlFacility_ SharemindAccessControlFacility;
 struct SharemindAccessControlFacility_ {
 
     SharemindAccessControlFacilityError
-    (* SHAREMIND_ICONST getAccessControlList)(
+    (* SHAREMIND_ICONST getProgramAclForClient)(
             SharemindAccessControlFacility const * facility,
             char const * principal,
             char const * action,
-            char const *& resultAcl);
+            SharemindAccessControlFacilityProgramAcl *& resultAcl);
 
 };
 
