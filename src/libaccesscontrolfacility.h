@@ -104,6 +104,7 @@ static inline void SharemindAccessControlFacilityProgramAcl_free(
         free((char *)acl->deniedResources[i]);
     }
     free(acl->deniedResources);
+    free(acl);
 }
 
 struct SharemindAccessControlFacility_;
